@@ -7,8 +7,6 @@
     
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="ABI Brasil">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +19,9 @@
 </head>
 <body class="min-h-screen flex flex-col items-center p-4">
 
-    <header class="w-full max-w-md mb-6 text-center pt-6">
+    <header class="w-full max-w-md mb-6 text-center pt-6 flex flex-col items-center">
+        <img src="logo.png" alt="Logo ABI" class="w-20 h-20 mb-4 rounded-2xl shadow-lg border border-slate-700">
+        
         <h1 class="text-3xl font-extrabold text-white tracking-tighter">ABI <span class="text-yellow-500">do Brasil</span></h1>
         <div class="flex justify-center gap-2 mt-2">
             <span class="bg-slate-800 text-[10px] px-2 py-1 rounded text-slate-400 font-bold uppercase tracking-widest">Fee: 0.9%</span>
@@ -95,7 +95,6 @@
             const platformFeeRate = 0.009;
             const myProfitRate = 0.01;
             let finalUnitPrice = 0;
-            let totalLiquidacion = 0;
 
             if (currency === 'BRL' || currency === 'VES') {
                 statusBadge.innerText = "Operación: Venta de USDT";
@@ -108,7 +107,7 @@
                 statusBadge.innerText = "Operación: Compra de USDT";
                 statusBadge.className = "text-center font-black text-[11px] uppercase tracking-[0.2em] py-1 rounded-t-xl bg-emerald-900 text-emerald-200";
                 finalUnitPrice = spot * (1 - platformFeeRate - myProfitRate);
-                totalLiquidacion = amount * finalUnitPrice;
+                const totalLiquidacion = amount * finalUnitPrice;
                 document.getElementById('labelFinal').innerText = "Precio de compra sugerido";
                 document.getElementById('totalToClient').innerText = `${totalLiquidacion.toLocaleString(undefined, {minimumFractionDigits: 2})} en Efectivo`;
             }
