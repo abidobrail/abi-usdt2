@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ABI do Brasil - Exchange</title>
     
-    <link rel="icon" type="image/png" href="Logo.png">
-    <link rel="apple-touch-icon" href="Logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,107 +14,159 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
         .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .accent-border { border-left: 4px solid #eab308; }
+        .bg-abi { background-color: #eab308; color: #0f172a; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-4">
+<body class="min-h-screen flex flex-col items-center p-4 pb-10">
 
     <header class="w-full max-w-md mb-6 text-center pt-6 flex flex-col items-center">
-        <img src="Logo.png" alt="Logo ABI" class="w-20 h-20 mb-4 rounded-2xl shadow-lg border border-slate-700">
-        
+        <img src="logo.png" alt="Logo ABI" class="w-20 h-20 mb-4 rounded-2xl shadow-lg border border-slate-700">
         <h1 class="text-3xl font-extrabold text-white tracking-tighter">ABI <span class="text-yellow-500">do Brasil</span></h1>
         <div class="flex justify-center gap-2 mt-2">
-            <span class="bg-slate-800 text-[10px] px-2 py-1 rounded text-slate-400 font-bold uppercase tracking-widest">Fee: 0.9%</span>
-            <span class="bg-emerald-900/30 text-[10px] px-2 py-1 rounded text-emerald-400 font-bold uppercase tracking-widest">Lucro: 1.0%</span>
+            <span class="bg-emerald-900/30 text-[10px] px-3 py-1 rounded-full text-emerald-400 font-bold uppercase tracking-widest">Lucro: 1.2%</span>
         </div>
     </header>
 
     <main class="w-full max-w-md space-y-4">
-        <section class="glass-card p-6 rounded-3xl shadow-2xl relative overflow-hidden">
-            <div class="space-y-4 relative z-10">
+        <section class="glass-card p-6 rounded-3xl shadow-2xl space-y-4">
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest text-center">Tipo de Operación</label>
+                <select id="operationType" onchange="calcular()" class="w-full bg-slate-800 border-2 border-slate-700 rounded-2xl p-4 text-white text-sm font-bold outline-none focus:border-yellow-500 transition-all">
+                    <option value="localToUsdt">Cliente entrega Local → Recibe USDT (Venta)</option>
+                    <option value="usdtToLocal">Cliente entrega USDT → Recibe Local (Compra)</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">¿Qué entrega el cliente?</label>
-                    <select id="currency" onchange="calcular()" class="w-full bg-slate-800 border-2 border-slate-700 rounded-2xl p-4 text-white text-lg font-bold outline-none focus:border-yellow-500 transition-all">
-                        <option value="BRL">Reais (BRL) → Compra USDT</option>
-                        <option value="VES">Bolívares (VES) → Compra USDT</option>
-                        <option value="USDT">USDT → Recibe Local</option>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Moneda Local</label>
+                    <select id="currency" onchange="calcular()" class="w-full bg-slate-800 border-none rounded-xl p-3 text-white text-sm font-bold outline-none">
+                        <option value="BRL">Reais (BRL)</option>
+                        <option value="VES">Bolívares (VES)</option>
                     </select>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Precio Spot</label>
-                        <input type="number" id="spotPrice" oninput="calcular()" step="any" placeholder="0.00" class="w-full bg-slate-800 border-none rounded-xl p-3 text-white text-lg font-semibold outline-none focus:ring-2 focus:ring-yellow-500">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Cantidad</label>
-                        <input type="number" id="amount" oninput="calcular()" step="any" placeholder="Monto" class="w-full bg-slate-800 border-none rounded-xl p-3 text-white text-lg font-semibold outline-none focus:ring-2 focus:ring-yellow-500">
-                    </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Precio Spot</label>
+                    <input type="number" id="spotPrice" oninput="calcular()" step="any" placeholder="0.00" class="w-full bg-slate-800 border-none rounded-xl p-3 text-white text-lg font-bold outline-none">
                 </div>
+            </div>
+
+            <div class="pt-2">
+                <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest text-center">Monto a ingresar</label>
+                <div class="flex bg-slate-800 rounded-2xl p-1 gap-1">
+                    <button id="modeAmountLocal" onclick="setInputMode('local')" class="flex-1 py-2 rounded-xl text-[11px] font-black uppercase transition-all bg-slate-700 text-white">Monto Local</button>
+                    <button id="modeAmountUsdt" onclick="setInputMode('usdt')" class="flex-1 py-2 rounded-xl text-[11px] font-black uppercase transition-all text-slate-500">Monto USDT</button>
+                </div>
+            </div>
+
+            <div class="relative">
+                <input type="number" id="mainInput" oninput="calcular()" step="any" placeholder="0.00" class="w-full bg-slate-900 border-2 border-yellow-500/30 rounded-2xl p-5 text-white text-2xl font-black outline-none focus:border-yellow-500 text-center transition-all">
+                <span id="inputLabel" class="absolute right-4 bottom-2 text-[10px] font-bold text-yellow-500 uppercase">BRL</span>
             </div>
         </section>
 
         <section id="results" class="hidden space-y-3">
-            <div id="statusBadge" class="text-center font-black text-[11px] uppercase tracking-[0.2em] py-1 rounded-t-xl"></div>
-            <div class="bg-yellow-500 text-slate-900 p-6 rounded-b-3xl shadow-lg text-center">
-                <p id="labelFinal" class="text-[10px] font-black uppercase opacity-70 mb-1"></p>
-                <h2 id="finalPriceDisplay" class="text-4xl font-black tracking-tighter leading-none mb-4"></h2>
-                <div class="pt-4 border-t border-slate-900/20">
-                    <p class="text-[10px] font-black uppercase opacity-70 mb-1">Total de la Operación</p>
-                    <h2 id="totalToClient" class="text-3xl font-black tracking-tighter"></h2>
+            <div class="bg-abi p-6 rounded-3xl shadow-xl text-center">
+                <p id="resultLabel" class="text-[10px] font-black uppercase opacity-70 mb-1"></p>
+                <h2 id="mainResult" class="text-4xl font-black tracking-tighter"></h2>
+                
+                <div class="mt-4 pt-4 border-t border-slate-900/10 flex justify-between items-center text-left">
+                    <div>
+                        <p class="text-[10px] font-black uppercase opacity-70">Precio con Lucro</p>
+                        <p id="unitPrice" class="font-bold text-lg leading-none"></p>
+                    </div>
+                    <div class="text-right text-emerald-900">
+                        <p class="text-[10px] font-black uppercase opacity-70">Tu Ganancia</p>
+                        <p id="profit" class="font-bold text-lg leading-none"></p>
+                    </div>
                 </div>
             </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="glass-card p-4 rounded-2xl accent-border">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">Tu Ganancia (1%)</p>
-                    <p id="profitDisplay" class="text-emerald-400 font-black text-xl"></p>
-                </div>
-                <div class="glass-card p-4 rounded-2xl border-l-4 border-red-500">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">Tarifa Operativa</p>
-                    <p id="feeDisplay" class="text-red-400 font-black text-xl"></p>
-                </div>
+            
+            <div class="glass-card p-4 rounded-2xl text-center">
+                <p class="text-[9px] text-slate-500 uppercase tracking-widest">Estatus de Operación</p>
+                <p id="opStatus" class="font-bold text-sm uppercase text-slate-300"></p>
             </div>
         </section>
     </main>
 
     <script>
+        let inputMode = 'local';
+
+        function setInputMode(mode) {
+            inputMode = mode;
+            const btnL = document.getElementById('modeAmountLocal');
+            const btnU = document.getElementById('modeAmountUsdt');
+            const currency = document.getElementById('currency').value;
+            
+            if(mode === 'local') {
+                btnL.className = "flex-1 py-2 rounded-xl text-[11px] font-black uppercase bg-slate-700 text-white";
+                btnU.className = "flex-1 py-2 rounded-xl text-[11px] font-black uppercase text-slate-500";
+                document.getElementById('inputLabel').innerText = currency;
+            } else {
+                btnU.className = "flex-1 py-2 rounded-xl text-[11px] font-black uppercase bg-slate-700 text-white";
+                btnL.className = "flex-1 py-2 rounded-xl text-[11px] font-black uppercase text-slate-500";
+                document.getElementById('inputLabel').innerText = "USDT";
+            }
+            calcular();
+        }
+
         function calcular() {
+            const opType = document.getElementById('operationType').value;
             const spot = parseFloat(document.getElementById('spotPrice').value);
-            const amount = parseFloat(document.getElementById('amount').value);
+            const val = parseFloat(document.getElementById('mainInput').value);
             const currency = document.getElementById('currency').value;
             const results = document.getElementById('results');
-            const statusBadge = document.getElementById('statusBadge');
 
-            if (!spot || !amount || spot <= 0 || amount <= 0) {
+            if(inputMode === 'local') document.getElementById('inputLabel').innerText = currency;
+
+            if (!spot || !val || spot <= 0 || val <= 0) {
                 results.classList.add('hidden');
                 return;
             }
 
             results.classList.remove('hidden');
-            const platformFeeRate = 0.009;
-            const myProfitRate = 0.01;
-            let finalUnitPrice = 0;
 
-            if (currency === 'BRL' || currency === 'VES') {
-                statusBadge.innerText = "Operación: Venta de USDT";
-                statusBadge.className = "text-center font-black text-[11px] uppercase tracking-[0.2em] py-1 rounded-t-xl bg-blue-900 text-blue-200";
-                finalUnitPrice = spot * (1 + platformFeeRate + myProfitRate);
-                const usdtEntregados = amount / finalUnitPrice;
-                document.getElementById('labelFinal').innerText = "Precio de venta sugerido";
-                document.getElementById('totalToClient').innerText = `${usdtEntregados.toFixed(2)} USDT`;
+            const profitRate = 0.012; // 1.2%
+            let finalPrice = 0;
+            let resultAmount = 0;
+            let totalUsdtVolume = 0;
+
+            if (opType === 'localToUsdt') {
+                // VENTA: El precio de la unidad sube 1.2%
+                finalPrice = spot * (1 + profitRate);
+                document.getElementById('opStatus').innerText = "Venta de USDT";
+                
+                if (inputMode === 'local') {
+                    resultAmount = val / finalPrice;
+                    totalUsdtVolume = resultAmount;
+                    document.getElementById('mainResult').innerText = resultAmount.toFixed(2) + " USDT";
+                    document.getElementById('resultLabel').innerText = "El cliente recibe";
+                } else {
+                    resultAmount = val * finalPrice;
+                    totalUsdtVolume = val;
+                    document.getElementById('mainResult').innerText = currency + " " + resultAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+                    document.getElementById('resultLabel').innerText = "El cliente debe pagar";
+                }
             } else {
-                statusBadge.innerText = "Operación: Compra de USDT";
-                statusBadge.className = "text-center font-black text-[11px] uppercase tracking-[0.2em] py-1 rounded-t-xl bg-emerald-900 text-emerald-200";
-                finalUnitPrice = spot * (1 - platformFeeRate - myProfitRate);
-                const totalLiquidacion = amount * finalUnitPrice;
-                document.getElementById('labelFinal').innerText = "Precio de compra sugerido";
-                document.getElementById('totalToClient').innerText = `${totalLiquidacion.toLocaleString(undefined, {minimumFractionDigits: 2})} en Efectivo`;
+                // COMPRA: El precio de la unidad baja 1.2%
+                finalPrice = spot * (1 - profitRate);
+                document.getElementById('opStatus').innerText = "Compra de USDT";
+                
+                if (inputMode === 'local') {
+                    resultAmount = val / finalPrice;
+                    totalUsdtVolume = resultAmount;
+                    document.getElementById('mainResult').innerText = resultAmount.toFixed(2) + " USDT";
+                    document.getElementById('resultLabel').innerText = "El cliente debe entregar";
+                } else {
+                    resultAmount = val * finalPrice;
+                    totalUsdtVolume = val;
+                    document.getElementById('mainResult').innerText = currency + " " + resultAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+                    document.getElementById('resultLabel').innerText = "El cliente recibe";
+                }
             }
 
-            document.getElementById('finalPriceDisplay').innerText = finalUnitPrice.toFixed(4);
-            document.getElementById('profitDisplay').innerText = `$${((spot * myProfitRate) * amount).toFixed(2)}`;
-            document.getElementById('feeDisplay').innerText = `$${((spot * platformFeeRate) * amount).toFixed(2)}`;
+            document.getElementById('unitPrice').innerText = finalPrice.toFixed(4);
+            document.getElementById('profit').innerText = "$" + (totalUsdtVolume * spot * profitRate).toFixed(2);
         }
     </script>
 </body>
